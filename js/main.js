@@ -1,4 +1,4 @@
 "use strict";
-initReviewModuleFromSelf("/marketing/profile/templ.html", function (dom, obj) {
+initReviewModuleFromSelf("https://profile.ninkigumi.com/templ.html", function (dom, obj) {
     applyPerson(dom, obj);
 });
