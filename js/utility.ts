@@ -65,7 +65,7 @@ function applyPerson(dom: HTMLElement, obj): HTMLElement {
             return applyDOM(dom, a);
         });
     }
-    addDOM(dom);
+    //addDOM(dom);
     return dom;
 }
 function applyReview(dom: HTMLElement, obj, fn): HTMLElement {
@@ -118,6 +118,9 @@ function applyHTMLTemplates(dom: HTMLElement) {
 }
 function addDOM(dom: HTMLElement) {
     document.body.appendChild(document.importNode(dom, true));
+}
+function addDOM2(dom: HTMLElement, selector:string) {
+    document.querySelector(selector).appendChild(document.importNode(dom, true));
 }
 function initModule(tmpl: string, urls: string, fn) {
     document.addEventListener("DOMContentLoaded", (event) => {
