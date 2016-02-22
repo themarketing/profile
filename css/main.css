@@ -1,0 +1,16 @@
+.person{
+  display: table;
+  box-shadow: 2px 2px 6px #888888;
+}
+.face{
+  display:table-cell;
+  vertical-align:middle;
+  padding:1rem;
+  text-align: center;
+  width:5rem;
+}
+.face>img{
+  border-radius: 50%;
+  width:4rem;
+  height:4rem;
+}
