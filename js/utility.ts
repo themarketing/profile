@@ -119,7 +119,7 @@ function applyHTMLTemplates(dom: HTMLElement) {
 function addDOM(dom: HTMLElement) {
     document.body.appendChild(document.importNode(dom, true));
 }
-function initReviewModule(tmpl: string, urls: string, fn) {
+function initModule(tmpl: string, urls: string, fn) {
     document.addEventListener("DOMContentLoaded", (event) => {
         getContextFromHTTP(tmpl, (dom) => {
             getTextFromHTTP(urls, (text) => {
@@ -133,7 +133,7 @@ function initReviewModule(tmpl: string, urls: string, fn) {
         });
     });
 }
-function initReviewModuleFromSelf(tmpl: string, fn) {
+function initModuleFromSelf(tmpl: string, fn) {
     document.addEventListener("DOMContentLoaded", (event) => {
         getContextFromHTTP(tmpl, (dom) => {
             let templdom = dom.cloneNode(true);

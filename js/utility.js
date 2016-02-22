@@ -119,7 +119,7 @@ function applyHTMLTemplates(dom) {
 function addDOM(dom) {
     document.body.appendChild(document.importNode(dom, true));
 }
-function initReviewModule(tmpl, urls, fn) {
+function initModule(tmpl, urls, fn) {
     document.addEventListener("DOMContentLoaded", function (event) {
         getContextFromHTTP(tmpl, function (dom) {
             getTextFromHTTP(urls, function (text) {
@@ -133,7 +133,7 @@ function initReviewModule(tmpl, urls, fn) {
         });
     });
 }
-function initReviewModuleFromSelf(tmpl, fn) {
+function initModuleFromSelf(tmpl, fn) {
     document.addEventListener("DOMContentLoaded", function (event) {
         getContextFromHTTP(tmpl, function (dom) {
             var templdom = dom.cloneNode(true);
