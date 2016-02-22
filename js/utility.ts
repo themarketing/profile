@@ -7,7 +7,7 @@ function getTextFromHTTP(url: string, fn) {
 }
 function getFromHTTP(url: string, fn, str: string) {
     let xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
+    xhr.onreadystatechange = () => {
         if (xhr.readyState == 4 && xhr.status == 200) {
             if (str === "document") {
                 return fn(xhr.responseXML);
@@ -87,9 +87,15 @@ function applyReview(dom: HTMLElement, obj, fn): HTMLElement {
             { selector: ".rpReviewURL", after: obj[`url`], fn: changeURL },
             { selector: ".rpPersonImage", after: obj[`author`][`image`], fn: changeSRC },
             { selector: ".rpPersonURL", after: obj[`author`][`url`], fn: changeURL }
-        ].forEach(function(a) { return applyDOM(dom, a); });
+        ].forEach((a) => { return applyDOM(dom, a); });
     }
     return dom;
+}
+function initReview(dom, obj) {
+    applyReview(dom, obj, (dom, obj) => {
+        applyPerson(dom, obj);
+        addDOM(dom);
+    });
 }
 function getJSONLDs(dom: any) {
     let vals = dom.querySelectorAll('script[type="application/ld+json"]');
@@ -119,14 +125,16 @@ function applyHTMLTemplates(dom: HTMLElement) {
 function addDOM(dom: HTMLElement) {
     document.body.appendChild(document.importNode(dom, true));
 }
-function addDOM2(dom: HTMLElement, selector:string) {
+function addDOM2(dom: HTMLElement, selector: string) {
     document.querySelector(selector).appendChild(document.importNode(dom, true));
 }
 function initModule(tmpl: string, urls: string, fn) {
     document.addEventListener("DOMContentLoaded", (event) => {
         getContextFromHTTP(tmpl, (dom) => {
             getTextFromHTTP(urls, (text) => {
-                text.split(/\r\n|\r|\n/).map((url) => {
+                text.split(/\r\n|\r|\n/).filter((item) => {
+                    if (item !== '') return true;
+                }).map((url) => {
                     let templdom = dom.cloneNode(true);
                     getContextFromHTTP(url, (jsonlddom) => {
                         applyJSONLD(getHTMLTemplates(templdom), getJSONLDs(jsonlddom), fn);

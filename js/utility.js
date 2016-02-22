@@ -90,6 +90,12 @@ function applyReview(dom, obj, fn) {
     }
     return dom;
 }
+function initReview(dom, obj) {
+    applyReview(dom, obj, function (dom, obj) {
+        applyPerson(dom, obj);
+        addDOM(dom);
+    });
+}
 function getJSONLDs(dom) {
     var vals = dom.querySelectorAll('script[type="application/ld+json"]');
     return Array.prototype.map.call(vals, function (val) {
@@ -125,7 +131,10 @@ function initModule(tmpl, urls, fn) {
     document.addEventListener("DOMContentLoaded", function (event) {
         getContextFromHTTP(tmpl, function (dom) {
             getTextFromHTTP(urls, function (text) {
-                text.split(/\r\n|\r|\n/).map(function (url) {
+                text.split(/\r\n|\r|\n/).filter(function (item) {
+                    if (item !== '')
+                        return true;
+                }).map(function (url) {
                     var templdom = dom.cloneNode(true);
                     getContextFromHTTP(url, function (jsonlddom) {
                         applyJSONLD(getHTMLTemplates(templdom), getJSONLDs(jsonlddom), fn);
