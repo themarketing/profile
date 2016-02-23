@@ -40,7 +40,7 @@ function changeID(elm: HTMLElement, str: string): HTMLElement {
 }
 function applyDOM(dom: HTMLElement, a): HTMLElement {
     let elms = dom.querySelectorAll(a.selector);
-    //// ここからホントは余計なコード ios safariで名前が出ない問題の dirty hack
+    ///// ここからホントは余計なコード ios safariで名前が出ない問題の dirty hack
     Array.prototype.map.call(Array.prototype.filter.call(dom.querySelectorAll("div"), (subdom) => {
         if (subdom.className === "rpPersonName") { return true; }
     }), (elm) => {
@@ -66,8 +66,8 @@ function applyPerson(dom: HTMLElement, obj): HTMLElement {
     if (obj[`@type`] === `Person`) {
         [
             { selector: ".person", after: obj[`@id`], fn: changeID },
-            //{ selector: ".rpPersonName", after: getAuthorName(obj[`name`]), fn: changeTXT },
-            { selector: "div.rpPersonName", after: obj['name'], fn: changeTXT },
+            { selector: ".rpPersonName", after: getAuthorName(obj[`name`]), fn: changeTXT },
+            //{ selector: "div.rpPersonName", after: obj['name'], fn: changeTXT },
             { selector: ".rpPersonImage", after: obj[`image`], fn: changeSRC },
             { selector: ".rpPersonURL", after: obj[`url`], fn: changeURL }
         ].map((a) => {
