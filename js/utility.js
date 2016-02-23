@@ -39,16 +39,11 @@ function changeID(elm, str) {
 }
 function applyDOM(dom, a) {
     var elms = dom.querySelectorAll(a.selector);
-    console.log(dom.querySelectorAll(".rpPersonName"));
-    console.log(dom);
-    var aaa = dom.querySelectorAll("div");
-    var aaaa = Array.prototype.filter.call(aaa, function (subdom) {
+    Array.prototype.map.call(Array.prototype.filter.call(dom.querySelectorAll("div"), function (subdom) {
         if (subdom.className === "rpPersonName") {
             return true;
         }
-    });
-    console.log(aaaa);
-    Array.prototype.map.call(aaaa, function (elm) {
+    }), function (elm) {
         if (typeof a.after !== "undefined") {
             return a.fn(elm, "");
         }
