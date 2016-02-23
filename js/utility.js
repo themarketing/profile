@@ -38,13 +38,14 @@ function changeID(elm, str) {
     return elm;
 }
 function applyDOM(dom, a) {
-    console.log(dom.querySelector(a.selector));
     var elms = dom.querySelectorAll(a.selector);
-    return Array.prototype.map.call(elms, function (elm) {
+    console.log(dom.querySelector(a.selector));
+    Array.prototype.map.call(elms, function (elm) {
         if (typeof a.after !== "undefined") {
             return a.fn(elm, a.after);
         }
     });
+    return dom;
 }
 function getAuthorName(val) {
     return (typeof val === 'object') ? val['name'] : val;
