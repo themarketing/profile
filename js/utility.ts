@@ -41,14 +41,14 @@ function changeID(elm: HTMLElement, str: string): HTMLElement {
 function applyDOM(dom: HTMLElement, a): HTMLElement {
     console.log(dom.querySelector(a.selector));
     //if (dom.querySelector(a.selector)) {
-        let elms = dom.querySelectorAll(a.selector);
-        Array.prototype.map.call(elms, (elm) => {
-            if (typeof a.after !== "undefined") {
-                return a.fn(elm, a.after);
-            }
-        });
+    let elms = dom.querySelectorAll(a.selector);
+    return Array.prototype.map.call(elms, (elm) => {
+        if (typeof a.after !== "undefined") {
+            return a.fn(elm, a.after);
+        }
+    });
     //}
-    return dom;
+    //return dom;
 }
 function getAuthorName(val) {
     return (typeof val === 'object') ? val['name'] : val;

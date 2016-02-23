@@ -40,12 +40,11 @@ function changeID(elm, str) {
 function applyDOM(dom, a) {
     console.log(dom.querySelector(a.selector));
     var elms = dom.querySelectorAll(a.selector);
-    Array.prototype.map.call(elms, function (elm) {
+    return Array.prototype.map.call(elms, function (elm) {
         if (typeof a.after !== "undefined") {
             return a.fn(elm, a.after);
         }
     });
-    return dom;
 }
 function getAuthorName(val) {
     return (typeof val === 'object') ? val['name'] : val;
