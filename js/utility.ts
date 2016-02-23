@@ -44,6 +44,10 @@ function applyDOM(dom: HTMLElement, a): HTMLElement {
     let elms = dom.querySelectorAll(a.selector);
     //console.log(elms);
     console.log(dom.querySelector(a.selector));
+    console.log(dom.querySelector(a.selector));
+    console.log(dom.querySelector(a.selector));
+    console.log(dom.querySelector(a.selector));
+    console.log(dom.querySelector(a.selector));
     Array.prototype.map.call(elms, (elm) => {
         if (typeof a.after !== "undefined") {
             return a.fn(elm, a.after);

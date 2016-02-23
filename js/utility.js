@@ -40,6 +40,10 @@ function changeID(elm, str) {
 function applyDOM(dom, a) {
     var elms = dom.querySelectorAll(a.selector);
     console.log(dom.querySelector(a.selector));
+    console.log(dom.querySelector(a.selector));
+    console.log(dom.querySelector(a.selector));
+    console.log(dom.querySelector(a.selector));
+    console.log(dom.querySelector(a.selector));
     Array.prototype.map.call(elms, function (elm) {
         if (typeof a.after !== "undefined") {
             return a.fn(elm, a.after);
