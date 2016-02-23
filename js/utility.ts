@@ -59,7 +59,7 @@ function applyDOM(dom: HTMLElement, a): HTMLElement {
 function getAuthorName(val) {
     return (typeof val === 'object') ? val['name'] : val;
 }
-function applyPerson(dom: HTMLElement, obj): HTMLElement {
+function applyPerson(dom: HTMLElement, obj){
     if (typeof obj[`image`] === "undefined") {
         obj[`image`] = ``;
     }
@@ -67,15 +67,12 @@ function applyPerson(dom: HTMLElement, obj): HTMLElement {
         [
             { selector: ".person", after: obj[`@id`], fn: changeID },
             { selector: ".rpPersonName", after: getAuthorName(obj[`name`]), fn: changeTXT },
-            //{ selector: "div.rpPersonName", after: obj['name'], fn: changeTXT },
             { selector: ".rpPersonImage", after: obj[`image`], fn: changeSRC },
             { selector: ".rpPersonURL", after: obj[`url`], fn: changeURL }
         ].map((a) => {
             return applyDOM(dom, a);
         });
     }
-    //addDOM(dom);
-    return dom;
 }
 function applyReview(dom: HTMLElement, obj, fn): HTMLElement {
     if (obj[`@type`] === `Review`) {

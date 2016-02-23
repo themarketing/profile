@@ -72,7 +72,6 @@ function applyPerson(dom, obj) {
             return applyDOM(dom, a);
         });
     }
-    return dom;
 }
 function applyReview(dom, obj, fn) {
     if (obj["@type"] === "Review") {
