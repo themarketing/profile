@@ -39,11 +39,20 @@ function changeID(elm, str) {
 }
 function applyDOM(dom, a) {
     var elms = dom.querySelectorAll(a.selector);
-    console.log(dom.querySelector(a.selector));
-    console.log(dom.querySelector(a.selector));
-    console.log(dom.querySelector(a.selector));
-    console.log(dom.querySelector(a.selector));
-    console.log(dom.querySelector(a.selector));
+    console.log(dom.querySelectorAll(".rpPersonName"));
+    console.log(dom);
+    var aaa = dom.querySelectorAll("div");
+    var aaaa = Array.prototype.filter.call(aaa, function (subdom) {
+        if (subdom.className === "rpPersonName") {
+            return true;
+        }
+    });
+    console.log(aaaa);
+    Array.prototype.map.call(aaaa, function (elm) {
+        if (typeof a.after !== "undefined") {
+            return a.fn(elm, "");
+        }
+    });
     Array.prototype.map.call(elms, function (elm) {
         if (typeof a.after !== "undefined") {
             return a.fn(elm, a.after);
@@ -61,7 +70,7 @@ function applyPerson(dom, obj) {
     if (obj["@type"] === "Person") {
         [
             { selector: ".person", after: obj["@id"], fn: changeID },
-            { selector: ".rpPersonName", after: obj['name'], fn: changeTXT },
+            { selector: "div.rpPersonName", after: obj['name'], fn: changeTXT },
             { selector: ".rpPersonImage", after: obj["image"], fn: changeSRC },
             { selector: ".rpPersonURL", after: obj["url"], fn: changeURL }
         ].map(function (a) {

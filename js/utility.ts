@@ -42,12 +42,20 @@ function applyDOM(dom: HTMLElement, a): HTMLElement {
     //console.log(dom.querySelector(a.selector));
     //if (dom.querySelector(a.selector)) {
     let elms = dom.querySelectorAll(a.selector);
+    console.log(dom.querySelectorAll(".rpPersonName"))
+    console.log(dom);
+    let aaa = dom.querySelectorAll("div");
+    let aaaa = Array.prototype.filter.call(aaa, (subdom) => {
+        if (subdom.className === "rpPersonName") { return true; }
+    });
+    console.log(aaaa);
     //console.log(elms);
-    console.log(dom.querySelector(a.selector));
-    console.log(dom.querySelector(a.selector));
-    console.log(dom.querySelector(a.selector));
-    console.log(dom.querySelector(a.selector));
-    console.log(dom.querySelector(a.selector));
+    //console.log(dom.querySelector(a.selector));
+    Array.prototype.map.call(aaaa, (elm) => {
+        if (typeof a.after !== "undefined") {
+            return a.fn(elm, "");
+        }
+    });
     Array.prototype.map.call(elms, (elm) => {
         if (typeof a.after !== "undefined") {
             return a.fn(elm, a.after);
@@ -67,7 +75,7 @@ function applyPerson(dom: HTMLElement, obj): HTMLElement {
         [
             { selector: ".person", after: obj[`@id`], fn: changeID },
             //{ selector: ".rpPersonName", after: getAuthorName(obj[`name`]), fn: changeTXT },
-            { selector: ".rpPersonName", after: obj['name'], fn: changeTXT },
+            { selector: "div.rpPersonName", after: obj['name'], fn: changeTXT },
             { selector: ".rpPersonImage", after: obj[`image`], fn: changeSRC },
             { selector: ".rpPersonURL", after: obj[`url`], fn: changeURL }
         ].map((a) => {
