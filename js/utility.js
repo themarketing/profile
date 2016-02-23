@@ -22,7 +22,7 @@ function getFromHTTP(url, fn, str) {
     xhr.send();
 }
 function changeTXT(elm, str) {
-    elm.innerHTML = str;
+    elm.insertAdjacentHTML('afterbegin', str);
     return elm;
 }
 function changeSRC(elm, str) {
@@ -38,14 +38,13 @@ function changeID(elm, str) {
     return elm;
 }
 function applyDOM(dom, a) {
-    if (dom.querySelector(a.selector)) {
-        var elms = dom.querySelectorAll(a.selector);
-        Array.prototype.map.call(elms, function (elm) {
-            if (typeof a.after !== "undefined") {
-                return a.fn(elm, a.after);
-            }
-        });
-    }
+    console.log(dom.querySelector(a.selector));
+    var elms = dom.querySelectorAll(a.selector);
+    Array.prototype.map.call(elms, function (elm) {
+        if (typeof a.after !== "undefined") {
+            return a.fn(elm, a.after);
+        }
+    });
     return dom;
 }
 function getAuthorName(val) {

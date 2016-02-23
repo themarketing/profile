@@ -22,7 +22,8 @@ function getFromHTTP(url: string, fn, str: string) {
     xhr.send();
 }
 function changeTXT(elm: HTMLElement, str: string): HTMLElement {
-    elm.innerHTML = str;
+    //elm.innerHTML = str;
+    elm.insertAdjacentHTML('afterbegin', str);
     return elm;
 }
 function changeSRC(elm: HTMLImageElement, str: string): HTMLElement {
@@ -38,14 +39,15 @@ function changeID(elm: HTMLElement, str: string): HTMLElement {
     return elm;
 }
 function applyDOM(dom: HTMLElement, a): HTMLElement {
-    if (dom.querySelector(a.selector)) {
+    console.log(dom.querySelector(a.selector));
+    //if (dom.querySelector(a.selector)) {
         let elms = dom.querySelectorAll(a.selector);
         Array.prototype.map.call(elms, (elm) => {
             if (typeof a.after !== "undefined") {
                 return a.fn(elm, a.after);
             }
         });
-    }
+    //}
     return dom;
 }
 function getAuthorName(val) {
