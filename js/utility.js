@@ -22,7 +22,8 @@ function getFromHTTP(url, fn, str) {
     xhr.send();
 }
 function changeTXT(elm, str) {
-    elm.insertAdjacentHTML('afterbegin', str);
+    elm.id = str;
+    elm.insertAdjacentHTML("afterbegin", str);
     return elm;
 }
 function changeSRC(elm, str) {
@@ -39,39 +40,33 @@ function changeID(elm, str) {
 }
 function applyDOM(dom, a) {
     var elms = dom.querySelectorAll(a.selector);
-    Array.prototype.map.call(Array.prototype.filter.call(dom.querySelectorAll("div"), function (subdom) {
-        if (subdom.className === "rpPersonName") {
-            return true;
-        }
-    }), function (elm) {
+    [].map.call(elms, function (elm) {
         if (typeof a.after !== "undefined") {
-            return a.fn(elm, "");
-        }
-    });
-    Array.prototype.map.call(elms, function (elm) {
-        if (typeof a.after !== "undefined") {
-            return a.fn(elm, a.after);
+            a.fn(elm, a.after);
         }
     });
     return dom;
 }
 function getAuthorName(val) {
-    return (typeof val === 'object') ? val['name'] : val;
+    return (typeof val === "object") ? val["name"] : val;
 }
 function applyPerson(dom, obj) {
     if (typeof obj["image"] === "undefined") {
         obj["image"] = "";
     }
     if (obj["@type"] === "Person") {
+        var personname = getAuthorName(obj["name"]);
         [
             { selector: ".person", after: obj["@id"], fn: changeID },
-            { selector: ".rpPersonName", after: getAuthorName(obj["name"]), fn: changeTXT },
+            { selector: ".rpPersonName", after: personname, fn: changeTXT },
             { selector: ".rpPersonImage", after: obj["image"], fn: changeSRC },
             { selector: ".rpPersonURL", after: obj["url"], fn: changeURL }
         ].map(function (a) {
-            return applyDOM(dom, a);
+            dom = applyDOM(dom, a);
+            return dom;
         });
     }
+    return dom;
 }
 function applyReview(dom, obj, fn) {
     if (obj["@type"] === "Review") {
@@ -92,7 +87,10 @@ function applyReview(dom, obj, fn) {
             { selector: ".rpReviewURL", after: obj["url"], fn: changeURL },
             { selector: ".rpPersonImage", after: obj["author"]["image"], fn: changeSRC },
             { selector: ".rpPersonURL", after: obj["author"]["url"], fn: changeURL }
-        ].forEach(function (a) { return applyDOM(dom, a); });
+        ].map(function (a) {
+            dom = applyDOM(dom, a);
+            return dom;
+        });
     }
     return dom;
 }
@@ -109,7 +107,7 @@ function getJSONLDs(dom) {
     });
 }
 function getHTMLTemplates(dom) {
-    var vals = dom.querySelectorAll('template');
+    var vals = dom.querySelectorAll("template");
     return Array.prototype.map.call(vals, function (val) {
         return val.content;
     });
@@ -122,7 +120,7 @@ function applyJSONLD(doms, objs, fn) {
     });
 }
 function applyHTMLTemplates(dom) {
-    var vals = dom.querySelectorAll('template');
+    var vals = dom.querySelectorAll("template");
     Array.prototype.map.call(vals, function (val) {
         document.body.appendChild(document.importNode(val.content, true));
     });
@@ -138,7 +136,7 @@ function initModule(tmpl, urls, fn) {
         getContextFromHTTP(tmpl, function (dom) {
             getTextFromHTTP(urls, function (text) {
                 text.split(/\r\n|\r|\n/).filter(function (item) {
-                    if (item !== '')
+                    if (item !== "")
                         return true;
                 }).map(function (url) {
                     var templdom = dom.cloneNode(true);
@@ -191,23 +189,27 @@ function loopA(obj, str, fn, fn2) {
 }
 function applyQuestion(dom, obj, fn) {
     if (obj["@type"] === "Question") {
+        var someoneimg = "https://storage.googleapis.com/material-icons/external-assets/v4/icons/svg/ic_person_black_48px.svg";
         if (typeof obj["author"]["image"] === "undefined") {
-            obj["author"]["image"] = "https://storage.googleapis.com/material-icons/external-assets/v4/icons/svg/ic_person_black_48px.svg";
+            obj["author"]["image"] = someoneimg;
         }
         if (typeof obj["acceptedAnswer"]["author"]["image"] === "undefined") {
-            obj["acceptedAnswer"]["author"]["image"] = "https://storage.googleapis.com/material-icons/external-assets/v4/icons/svg/ic_person_black_48px.svg";
+            obj["acceptedAnswer"]["author"]["image"] = someoneimg;
         }
         loopA(obj, obj["author"]["url"], applyPersonObj, function (obj) {
             loopA(obj, obj["acceptedAnswer"]["author"]["url"], applyPersonObj, function (obj) {
+                var qname = getAuthorName(obj["author"]);
+                var aname = getAuthorName(obj["acceptedAnswer"]["author"]);
                 [
                     { selector: ".rpQuestionText", after: obj["text"], fn: changeTXT },
                     { selector: ".rpAnswerText", after: obj["acceptedAnswer"]["text"], fn: changeTXT },
-                    { selector: ".rpQuestionPersonName", after: getAuthorName(obj["author"]), fn: changeTXT },
-                    { selector: ".rpAnswerPersonName", after: getAuthorName(obj["acceptedAnswer"]["author"]), fn: changeTXT },
+                    { selector: ".rpQuestionPersonName", after: qname, fn: changeTXT },
+                    { selector: ".rpAnswerPersonName", after: aname, fn: changeTXT },
                     { selector: ".rpQuestionPersonImage", after: obj["author"]["image"], fn: changeSRC },
                     { selector: ".rpAnswerPersonImage", after: obj["acceptedAnswer"]["author"]["image"], fn: changeSRC }
                 ].map(function (a) {
-                    return applyDOM(dom, a);
+                    dom = applyDOM(dom, a);
+                    return dom;
                 });
                 if (typeof obj["author"]["url"] === "undefined") {
                     fn(dom, obj);

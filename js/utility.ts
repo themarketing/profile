@@ -23,7 +23,8 @@ function getFromHTTP(url: string, fn, str: string) {
 }
 function changeTXT(elm: HTMLElement, str: string): HTMLElement {
     //elm.innerHTML = str;
-    elm.insertAdjacentHTML('afterbegin', str);
+    elm.id = str;
+    elm.insertAdjacentHTML("afterbegin", str);
     return elm;
 }
 function changeSRC(elm: HTMLImageElement, str: string): HTMLElement {
@@ -40,44 +41,38 @@ function changeID(elm: HTMLElement, str: string): HTMLElement {
 }
 function applyDOM(dom: HTMLElement, a): HTMLElement {
     let elms = dom.querySelectorAll(a.selector);
-    ///// ここからホントは余計なコード ios safariで名前が出ない問題の dirty hack
-    Array.prototype.map.call(Array.prototype.filter.call(dom.querySelectorAll("div"), (subdom) => {
-        if (subdom.className === "rpPersonName") { return true; }
-    }), (elm) => {
+    [].map.call(elms, (elm) => {
         if (typeof a.after !== "undefined") {
-            return a.fn(elm, "");
-        }
-    });
-    ///// ここまで
-    Array.prototype.map.call(elms, (elm) => {
-        if (typeof a.after !== "undefined") {
-            return a.fn(elm, a.after);
+            a.fn(elm, a.after);
         }
     });
     return dom;
 }
 function getAuthorName(val) {
-    return (typeof val === 'object') ? val['name'] : val;
+    return (typeof val === "object") ? val["name"] : val;
 }
-function applyPerson(dom: HTMLElement, obj) {
-    if (typeof obj[`image`] === "undefined") {
-        obj[`image`] = ``;
+function applyPerson(dom: HTMLElement, obj): HTMLElement {
+    if (typeof obj["image"] === "undefined") {
+        obj["image"] = "";
     }
-    if (obj[`@type`] === `Person`) {
+    if (obj["@type"] === "Person") {
+        let personname = getAuthorName(obj["name"]);
         [
-            { selector: ".person", after: obj[`@id`], fn: changeID },
-            { selector: ".rpPersonName", after: getAuthorName(obj[`name`]), fn: changeTXT },
-            { selector: ".rpPersonImage", after: obj[`image`], fn: changeSRC },
-            { selector: ".rpPersonURL", after: obj[`url`], fn: changeURL }
+            { selector: ".person", after: obj["@id"], fn: changeID },
+            { selector: ".rpPersonName", after: personname, fn: changeTXT },
+            { selector: ".rpPersonImage", after: obj["image"], fn: changeSRC },
+            { selector: ".rpPersonURL", after: obj["url"], fn: changeURL }
         ].map((a) => {
-            return applyDOM(dom, a);
+            dom = applyDOM(dom, a);
+            return dom;
         });
     }
+    return dom;
 }
 function applyReview(dom: HTMLElement, obj, fn): HTMLElement {
-    if (obj[`@type`] === `Review`) {
-        if (typeof obj[`author`][`url`] !== "undefined") {
-            getContextFromHTTP(obj[`author`][`url`], (subdom) => {
+    if (obj["@type"] === "Review") {
+        if (typeof obj["author"]["url"] !== "undefined") {
+            getContextFromHTTP(obj["author"]["url"], (subdom) => {
                 getJSONLDs(subdom).map((obj) => {
                     fn(dom, obj);
                 });
@@ -85,15 +80,18 @@ function applyReview(dom: HTMLElement, obj, fn): HTMLElement {
             });
         }
         [
-            { selector: ".rpItemReviewedName", after: obj[`itemReviewed`][`name`], fn: changeTXT },
-            { selector: ".rpReviewRatingRatingValue", after: obj[`reviewRating`][`ratingValue`], fn: changeTXT },
-            { selector: ".rpPersonName", after: getAuthorName(obj[`author`]), fn: changeTXT },
-            { selector: ".rpReviewName", after: obj[`name`], fn: changeTXT },
-            { selector: ".rpReviewBody", after: obj[`reviewBody`], fn: changeTXT },
-            { selector: ".rpReviewURL", after: obj[`url`], fn: changeURL },
-            { selector: ".rpPersonImage", after: obj[`author`][`image`], fn: changeSRC },
-            { selector: ".rpPersonURL", after: obj[`author`][`url`], fn: changeURL }
-        ].forEach((a) => { return applyDOM(dom, a); });
+            { selector: ".rpItemReviewedName", after: obj["itemReviewed"]["name"], fn: changeTXT },
+            { selector: ".rpReviewRatingRatingValue", after: obj["reviewRating"]["ratingValue"], fn: changeTXT },
+            { selector: ".rpPersonName", after: getAuthorName(obj["author"]), fn: changeTXT },
+            { selector: ".rpReviewName", after: obj["name"], fn: changeTXT },
+            { selector: ".rpReviewBody", after: obj["reviewBody"], fn: changeTXT },
+            { selector: ".rpReviewURL", after: obj["url"], fn: changeURL },
+            { selector: ".rpPersonImage", after: obj["author"]["image"], fn: changeSRC },
+            { selector: ".rpPersonURL", after: obj["author"]["url"], fn: changeURL }
+        ].map((a) => {
+            dom = applyDOM(dom, a);
+            return dom;
+        });
     }
     return dom;
 }
@@ -110,7 +108,7 @@ function getJSONLDs(dom: any) {
     });
 }
 function getHTMLTemplates(dom: HTMLElement): HTMLElement[] {
-    let vals = dom.querySelectorAll('template');
+    let vals = dom.querySelectorAll("template");
     return Array.prototype.map.call(vals, (val) => {
         return val.content;
     });
@@ -123,7 +121,7 @@ function applyJSONLD(doms: HTMLElement[], objs, fn): any[] {
     });
 }
 function applyHTMLTemplates(dom: HTMLElement) {
-    let vals = dom.querySelectorAll('template');
+    let vals = dom.querySelectorAll("template");
     Array.prototype.map.call(vals, (val) => {
         document.body.appendChild(document.importNode(val.content, true));
     });
@@ -139,7 +137,7 @@ function initModule(tmpl: string, urls: string, fn) {
         getContextFromHTTP(tmpl, (dom) => {
             getTextFromHTTP(urls, (text) => {
                 text.split(/\r\n|\r|\n/).filter((item) => {
-                    if (item !== '') return true;
+                    if (item !== "") return true;
                 }).map((url) => {
                     let templdom = dom.cloneNode(true);
                     getContextFromHTTP(url, (jsonlddom) => {
@@ -167,7 +165,7 @@ function applyPersonObj(obj, subobj) {
     if (subobj["@type"] === "Person") {
         if (typeof subobj["image"] !== "undefined") {
             if (subobj["url"] === obj["author"]["url"]) {
-                obj[`author`]["image"] = subobj["image"];
+                obj["author"]["image"] = subobj["image"];
             }
             if (subobj["url"] === obj["acceptedAnswer"]["author"]["url"]) {
                 obj["acceptedAnswer"]["author"]["image"] = subobj["image"];
@@ -190,25 +188,29 @@ function loopA(obj, str: string, fn, fn2) {
 }
 function applyQuestion(dom: HTMLElement, obj, fn) {
     if (obj["@type"] === "Question") {
+        let someoneimg = "https://storage.googleapis.com/material-icons/external-assets/v4/icons/svg/ic_person_black_48px.svg";
         if (typeof obj["author"]["image"] === "undefined") {
-            obj["author"]["image"] = "https://storage.googleapis.com/material-icons/external-assets/v4/icons/svg/ic_person_black_48px.svg";
+            obj["author"]["image"] = someoneimg;
         }
         if (typeof obj["acceptedAnswer"]["author"]["image"] === "undefined") {
-            obj["acceptedAnswer"]["author"]["image"] = "https://storage.googleapis.com/material-icons/external-assets/v4/icons/svg/ic_person_black_48px.svg";
+            obj["acceptedAnswer"]["author"]["image"] = someoneimg;
         }
         loopA(obj, obj["author"]["url"], applyPersonObj, (obj) => {
             loopA(obj, obj["acceptedAnswer"]["author"]["url"], applyPersonObj, (obj) => {
+                let qname = getAuthorName(obj["author"]);
+                let aname = getAuthorName(obj["acceptedAnswer"]["author"]);
                 [
                     { selector: ".rpQuestionText", after: obj["text"], fn: changeTXT },
                     { selector: ".rpAnswerText", after: obj["acceptedAnswer"]["text"], fn: changeTXT },
-                    { selector: ".rpQuestionPersonName", after: getAuthorName(obj["author"]), fn: changeTXT },
-                    { selector: ".rpAnswerPersonName", after: getAuthorName(obj["acceptedAnswer"]["author"]), fn: changeTXT },
+                    { selector: ".rpQuestionPersonName", after: qname, fn: changeTXT },
+                    { selector: ".rpAnswerPersonName", after: aname, fn: changeTXT },
                     { selector: ".rpQuestionPersonImage", after: obj["author"]["image"], fn: changeSRC },
                     { selector: ".rpAnswerPersonImage", after: obj["acceptedAnswer"]["author"]["image"], fn: changeSRC }
                 ].map((a) => {
-                    return applyDOM(dom, a);
+                    dom = applyDOM(dom, a);
+                    return dom;
                 });
-                if (typeof obj[`author`][`url`] === "undefined") {
+                if (typeof obj["author"]["url"] === "undefined") {
                     fn(dom, obj);
                 }
             });
